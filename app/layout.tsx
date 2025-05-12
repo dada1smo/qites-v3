@@ -32,7 +32,7 @@ export default function RootLayout({
       <body
         className={`${archivo.variable} ${space_mono.variable} dark antialiased`}
       >
-        <UITheme accentColor="jade" grayColor="slate">
+        <UITheme accentColor="jade" grayColor="slate" radius="small">
           {children}
         </UITheme>
       </body>

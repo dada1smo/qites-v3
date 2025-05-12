@@ -25,4 +25,5 @@ body {
 
 .radix-themes {
   --default-font-family: var(--font-archivo);
+  --heading-font-family: var(--font-archivo);
 }
