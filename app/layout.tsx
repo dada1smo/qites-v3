@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import { Archivo, Space_Mono } from 'next/font/google';
 import '@radix-ui/themes/styles.css';
-import './globals.css';
 import UITheme from '@/ui/providers/ThemeProvider';
+import './globals.css';
 
 const archivo = Archivo({
   subsets: ['latin'],
