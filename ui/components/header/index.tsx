@@ -17,7 +17,8 @@ const UIHeader: FunctionComponent<UIHeaderProps> = ({ pageTitle }) => {
       justify="between"
       py="4"
       px="4"
-      className="border-b border-(--slate-5)"
+      className="text-(--jade-12)"
+      //   className="border-b border-(--slate-5)"
     >
       <UIHeading as="h1">{pageTitle ? pageTitle : 'Qites'}</UIHeading>
       <UIIconButton variant="soft">

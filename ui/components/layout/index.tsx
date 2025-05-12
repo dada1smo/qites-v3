@@ -2,6 +2,7 @@ import { FunctionComponent, ReactNode } from 'react';
 import UIFlex from '../flex';
 import UIHeader from '../header';
 import UIImage from '../image';
+import UIBox from '../box';
 
 interface UILayoutProps {
   pageTitle?: string;
@@ -16,7 +17,7 @@ const UILayout: FunctionComponent<UILayoutProps> = ({
     <UIFlex
       direction="column"
       align="stretch"
-      justify="center"
+      justify="start"
       className="h-[100dvh]"
       position="relative"
     >
@@ -25,10 +26,12 @@ const UILayout: FunctionComponent<UILayoutProps> = ({
         priority
         src="/bg-blur-gray-1.svg"
         alt=""
-        className="absolute h-full w-full opacity-50 -z-1"
+        className="absolute h-full w-full opacity-40 -z-1"
       />
       <UIHeader pageTitle={pageTitle} />
-      {children}
+      <UIBox px="4" py="3" height="100%" asChild>
+        <main>{children}</main>
+      </UIBox>
     </UIFlex>
   );
 };
