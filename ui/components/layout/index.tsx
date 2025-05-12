@@ -29,7 +29,14 @@ const UILayout: FunctionComponent<UILayoutProps> = ({
         className="absolute h-full w-full opacity-40 -z-1"
       />
       <UIHeader pageTitle={pageTitle} />
-      <UIBox px="4" py="3" height="100%" asChild>
+      <UIBox
+        px="4"
+        py="3"
+        height="100%"
+        asChild
+        position="relative"
+        className="overflow-hidden"
+      >
         <main>{children}</main>
       </UIBox>
     </UIFlex>
