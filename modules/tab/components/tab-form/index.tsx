@@ -42,7 +42,8 @@ const TabForm: FunctionComponent<TabFormProps> = () => {
           placeholder="0,00"
           control={control}
           mask="currency"
-          inputMode="currency"
+          inputMode="numeric"
+          pattern="[0-9]*"
         />
       </UIForm>
     </UIBox>

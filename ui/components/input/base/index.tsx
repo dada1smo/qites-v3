@@ -1,5 +1,6 @@
 import { TextField } from '@radix-ui/themes';
 import {
+  ChangeEvent,
   ChangeEventHandler,
   FocusEventHandler,
   FunctionComponent,
@@ -7,11 +8,9 @@ import {
 import { FieldError } from 'react-hook-form';
 import UIFlex from '../../flex';
 import UIText from '../../text';
-import { handleInputValue } from './masks';
-import { useNumberFormat } from '@react-input/number-format';
-import { mergeRefs } from '@/utils/format/ref';
+import { handleInputValue, handleOutputValue } from './masks';
 
-export type InputMode = 'currency' | 'percentual' | 'int' | 'float' | 'text';
+export type MaskOptions = 'currency' | 'percentual' | 'int' | 'float' | 'text';
 
 export interface UIInputProps {
   name: string;
@@ -31,11 +30,12 @@ export interface UIInputProps {
     | 'tel'
     | 'url'
     | 'week';
-  inputMode?: InputMode;
+  mask?: MaskOptions;
   placeholder?: string;
   fullWidth?: boolean;
   fieldRef?: React.Ref<HTMLInputElement>;
-  mask?: 'currency';
+  inputMode?: 'numeric' | 'decimal' | 'search' | 'tel' | 'text' | 'none';
+  pattern?: string;
 }
 
 export interface UIBaseInputProps extends UIInputProps {
@@ -48,23 +48,18 @@ const UIInput: FunctionComponent<UIBaseInputProps> = ({
   name,
   error,
   label,
-  type,
   placeholder,
   onChange,
   onBlur,
   value,
   fieldRef,
-  inputMode,
   mask,
+  inputMode,
+  pattern,
 }) => {
   const hasError = !!error?.message;
 
-  const inputValue = handleInputValue(inputMode || 'text', value);
-
-  const maskRef = useNumberFormat({
-    locales: 'pt-br',
-    maximumFractionDigits: 2,
-  });
+  const inputValue = handleInputValue(mask || 'text', value);
 
   return (
     <UIFlex direction="column" gap="1">
@@ -83,12 +78,22 @@ const UIInput: FunctionComponent<UIBaseInputProps> = ({
         name={name}
         id={name}
         placeholder={placeholder}
-        value={value}
-        onChange={onChange}
+        value={inputValue}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onChange={(e: any) => {
+          const formatValue = handleOutputValue(
+            mask || 'text',
+            e.target.value,
+            value
+          );
+          onChange(formatValue as unknown as ChangeEvent<HTMLInputElement>);
+        }}
         onBlur={onBlur}
         size="3"
-        type={type}
-        ref={mask ? mergeRefs(fieldRef, maskRef) : fieldRef}
+        type="text"
+        ref={fieldRef}
+        inputMode={inputMode}
+        pattern={pattern}
       />
       {hasError && (
         <UIText size="2" className="text-(--red-11)" as="span">

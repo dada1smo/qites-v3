@@ -1,7 +1,7 @@
 import { formatFloat } from '@/utils/format/number';
-import { InputMode } from '.';
+import { MaskOptions } from '.';
 
-export function handleInputValue(mode: InputMode, value?: string | number) {
+export function handleInputValue(mode: MaskOptions, value?: string | number) {
   if (!value) {
     return '';
   }
@@ -18,7 +18,7 @@ export function handleInputValue(mode: InputMode, value?: string | number) {
 }
 
 export function handleOutputValue(
-  mode: InputMode,
+  mode: MaskOptions,
   value?: string,
   oldValue?: string
 ) {
