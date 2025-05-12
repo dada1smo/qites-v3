@@ -22,6 +22,6 @@ body {
 }
 
 .radix-themes {
-  --default-font-family: var(--font-archivo);
-  --heading-font-family: var(--font-archivo);
+  --default-font-family: var(--font-archivo) !important;
+  --heading-font-family: var(--font-archivo) !important;
 }
