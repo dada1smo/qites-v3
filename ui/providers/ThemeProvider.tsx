@@ -3,7 +3,7 @@ import { Theme, ThemeProps } from '@radix-ui/themes';
 
 const UITheme = forwardRef<HTMLDivElement, ThemeProps>(({ ...props }, ref) => {
   return (
-    <Theme ref={ref} {...props} className="antialiased">
+    <Theme ref={ref} {...props}>
       {props.children}
     </Theme>
   );
