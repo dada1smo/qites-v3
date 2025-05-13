@@ -32,10 +32,10 @@ export interface UIInputProps {
     | 'week';
   mask?: MaskOptions;
   placeholder?: string;
-  fullWidth?: boolean;
   fieldRef?: React.Ref<HTMLInputElement>;
   inputMode?: 'numeric' | 'decimal' | 'search' | 'tel' | 'text' | 'none';
   pattern?: string;
+  width?: 'full' | 'fit';
 }
 
 export interface UIBaseInputProps extends UIInputProps {
@@ -56,13 +56,19 @@ const UIInput: FunctionComponent<UIBaseInputProps> = ({
   mask,
   inputMode,
   pattern,
+  width = 'full',
 }) => {
   const hasError = !!error?.message;
 
   const inputValue = handleInputValue(mask || 'text', value);
 
   return (
-    <UIFlex direction="column" gap="1">
+    <UIFlex
+      direction="column"
+      gap="1"
+      display={width === 'full' ? 'flex' : 'inline-flex'}
+      // width={width === 'full' ? '100%' : 'auto'}
+    >
       {label && (
         <UIText
           as="label"
@@ -94,6 +100,17 @@ const UIInput: FunctionComponent<UIBaseInputProps> = ({
         ref={fieldRef}
         inputMode={inputMode}
         pattern={pattern}
+        className="font-space-mono"
+        style={{
+          width:
+            width === 'full'
+              ? '100%'
+              : `calc(${
+                  inputValue.toString().length < 4
+                    ? 4
+                    : inputValue.toString().length
+                }ch + 24px)`,
+        }}
       />
       {hasError && (
         <UIText size="2" className="text-(--red-11)" as="span">

@@ -28,9 +28,9 @@ const UIFormInput: FunctionComponent<UIFormInputProps> = ({
         <UIBaseInput
           {...props}
           name={name}
-          onBlur={() => {
+          onBlur={(e) => {
             if (onFieldBlur) {
-              onFieldBlur();
+              onFieldBlur(e.target.value);
             }
             onBlur();
           }}

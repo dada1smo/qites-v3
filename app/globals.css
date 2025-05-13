@@ -25,3 +25,7 @@ body {
   --default-font-family: var(--font-archivo) !important;
   --heading-font-family: var(--font-archivo) !important;
 }
+
+.font-space-mono {
+  font-family: var(--font-space-mono) !important;
+}
