@@ -3,6 +3,7 @@ import { Archivo, Space_Mono } from 'next/font/google';
 import '@radix-ui/themes/styles.css';
 import UITheme from '@/ui/providers/ThemeProvider';
 import './globals.css';
+import { UISheetProvider } from '@/ui/providers/SheetProvider';
 
 const archivo = Archivo({
   subsets: ['latin'],
@@ -28,12 +29,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" suppressHydrationWarning>
       <body
+        suppressHydrationWarning
         className={`${archivo.variable} ${space_mono.variable} dark antialiased`}
       >
         <UITheme accentColor="jade" grayColor="slate" radius="small">
-          {children}
+          <UISheetProvider>{children}</UISheetProvider>
         </UITheme>
       </body>
     </html>

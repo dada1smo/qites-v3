@@ -6,14 +6,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import UIFormInput from '@/ui/components/input/form';
 import UIFlex from '@/ui/components/flex';
-import UIText from '@/ui/components/text';
-import TabParticipantForm from '../tab-participant-form';
 import { TabParticipantType } from '../../types/TabType';
-import UIChip from '@/ui/components/chip';
 import UIButton from '@/ui/components/button';
 import UIHeading from '@/ui/components/heading';
-
-interface TabFormProps {}
+import TabParticipantControl from '../tab-participant-control';
+import useGlobalStore from '@/modules/global/store/global.store';
+import { formatCurrencyToFloat, formatFloat } from '@/utils/format/number';
+import { useSheet } from '@/ui/providers/SheetProvider';
 
 const schema = z.object({
   tab_total: z
@@ -23,17 +22,25 @@ const schema = z.object({
 
 type FormFields = z.infer<typeof schema>;
 
-const defaultValues: FormFields = {
-  tab_total: '',
-};
+const TabForm: FunctionComponent = () => {
+  const initTab = useGlobalStore((state) => state.initTab);
+  const updateTabData = useGlobalStore((state) => state.updateTabData);
+  const tab = useGlobalStore((state) => state.tab);
 
-const TabForm: FunctionComponent<TabFormProps> = () => {
+  const defaultValues: FormFields = {
+    tab_total: formatFloat(tab?.total) || '',
+  };
+
+  const { closeSheet } = useSheet();
+
   const { control, handleSubmit } = useForm<FormFields>({
     resolver: zodResolver(schema),
     defaultValues,
   });
 
-  const [participants, setParticipants] = useState<TabParticipantType[]>([]);
+  const [participants, setParticipants] = useState<TabParticipantType[]>(
+    tab?.participants || []
+  );
 
   const addParticipant = (name: string) => {
     if (name.length < 2) return;
@@ -58,7 +65,13 @@ const TabForm: FunctionComponent<TabFormProps> = () => {
   };
 
   const submit = (data: FormFields) => {
-    console.log(data);
+    if (!tab?.id) {
+      initTab(formatCurrencyToFloat(data.tab_total), participants);
+    } else {
+      updateTabData(formatCurrencyToFloat(data.tab_total), participants);
+    }
+
+    closeSheet();
   };
 
   return (
@@ -75,23 +88,11 @@ const TabForm: FunctionComponent<TabFormProps> = () => {
         inputMode="numeric"
         pattern="[0-9]*"
       />
-      <UIFlex direction="column" gap="1" align="start">
-        <UIText as="span" size="2" weight="medium" className="text-(--jade-12)">
-          Quem tá junto?
-        </UIText>
-        <UIFlex gap="2" wrap="wrap">
-          {participants.map((participant) => {
-            return (
-              <UIChip
-                key={participant.id}
-                label={participant.name}
-                onDelete={() => removeParticipant(participant.id)}
-              />
-            );
-          })}
-          <TabParticipantForm addParticipant={addParticipant} />
-        </UIFlex>
-      </UIFlex>
+      <TabParticipantControl
+        addParticipant={addParticipant}
+        removeParticipant={removeParticipant}
+        participants={participants}
+      />
       <UIButton
         type="submit"
         disabled={participants.length === 0}

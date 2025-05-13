@@ -26,7 +26,7 @@ const UILayout: FunctionComponent<UILayoutProps> = ({
         priority
         src="/bg-blur-gray-1.svg"
         alt=""
-        className="absolute h-full w-full opacity-40 -z-1"
+        className="absolute h-full w-full opacity-20 -z-1"
       />
       <UIHeader pageTitle={pageTitle} />
       <UIBox

@@ -1,11 +1,25 @@
 import { Card, CardProps } from '@radix-ui/themes';
 import { FunctionComponent } from 'react';
 
-const UICardSheet: FunctionComponent<CardProps> = ({ ...props }) => {
+export interface UICardSheetProps {
+  expanded?: boolean;
+}
+
+const UICardSheet: FunctionComponent<CardProps & UICardSheetProps> = ({
+  expanded,
+  ...props
+}) => {
   return (
     <Card
       {...props}
-      className="!absolute left-2 h-[calc(100%+4px)] w-[calc(100%-16px)]"
+      className={`transition duration-3000 !absolute left-2 w-[calc(100%-16px)] -bottom-4`}
+      style={{
+        transition: '0.3s',
+        height: expanded
+          ? 'calc(100% + 4px)'
+          : 'calc(var(--bottom-sheet-height) + 16px)',
+      }}
+      suppressHydrationWarning
     />
   );
 };
