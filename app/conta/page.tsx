@@ -10,8 +10,6 @@ import { useEffect } from 'react';
 export default function TabPage() {
   const tabId = useGlobalStore((state) => state.tab?.id);
 
-  console.log(tabId);
-
   const { isOpen, closeSheet, openSheet } = useSheet();
 
   useEffect(() => {
