@@ -14,7 +14,7 @@ const UIForm: FunctionComponent<UIFormProps> = ({
 }) => {
   return (
     <form onSubmit={onSubmit} noValidate className={className}>
-      <UIFlex direction="column" gap="4">
+      <UIFlex direction="column" gap="6">
         {children as ReactNode}
       </UIFlex>
     </form>

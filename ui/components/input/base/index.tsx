@@ -7,8 +7,9 @@ import {
 } from 'react';
 import { FieldError } from 'react-hook-form';
 import UIFlex from '../../flex';
-import UIText from '../../text';
 import { handleInputValue, handleOutputValue } from './masks';
+import UILabel from '../../label';
+import UIFieldError from '../../field-error';
 
 export type MaskOptions = 'currency' | 'percentual' | 'int' | 'float' | 'text';
 
@@ -58,8 +59,6 @@ const UIInput: FunctionComponent<UIBaseInputProps> = ({
   pattern,
   width = 'full',
 }) => {
-  const hasError = !!error?.message;
-
   const inputValue = handleInputValue(mask || 'text', value);
 
   return (
@@ -67,19 +66,8 @@ const UIInput: FunctionComponent<UIBaseInputProps> = ({
       direction="column"
       gap="1"
       display={width === 'full' ? 'flex' : 'inline-flex'}
-      // width={width === 'full' ? '100%' : 'auto'}
     >
-      {label && (
-        <UIText
-          as="label"
-          size="2"
-          weight="medium"
-          htmlFor={name}
-          className="text-(--jade-12)"
-        >
-          {label}
-        </UIText>
-      )}
+      <UILabel label={label} fieldName={name} />
       <TextField.Root
         name={name}
         id={name}
@@ -112,11 +100,7 @@ const UIInput: FunctionComponent<UIBaseInputProps> = ({
                 }ch + 24px)`,
         }}
       />
-      {hasError && (
-        <UIText size="2" className="text-(--red-11)" as="span">
-          {error?.message}
-        </UIText>
-      )}
+      <UIFieldError error={error} />
     </UIFlex>
   );
 };

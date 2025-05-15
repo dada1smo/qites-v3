@@ -12,14 +12,12 @@ const UICardSheet: FunctionComponent<CardProps & UICardSheetProps> = ({
   return (
     <Card
       {...props}
-      className={`transition duration-3000 !absolute left-2 w-[calc(100%-16px)] -bottom-4`}
+      className={`transition duration-3000 !absolute top-0 left-2 w-[calc(100%-16px)] -bottom-4`}
       style={{
         transition: '0.3s',
-        height: expanded
-          ? 'calc(100% + 4px)'
-          : 'calc(var(--bottom-sheet-height) + 16px)',
+        height: 'calc(100% + 8px)',
+        transform: expanded ? 'translateY(0)' : 'translateY(100%)',
       }}
-      suppressHydrationWarning
     />
   );
 };
