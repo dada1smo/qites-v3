@@ -34,7 +34,7 @@ const TabData: FunctionComponent = () => {
         ]}
       />
       <UIFlex gap="4" align="center" justify="center">
-        <UIButton className="grow" variant="soft" size="3" onClick={openSheet}>
+        <UIButton variant="soft" size="3" onClick={openSheet}>
           Editar dados
         </UIButton>
         <UIButton className="!grow" size="3">

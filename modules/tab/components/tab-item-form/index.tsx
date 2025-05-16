@@ -3,8 +3,9 @@ import UIFlex from '@/ui/components/flex';
 import UIHeading from '@/ui/components/heading';
 import UIFormIncrementalInput from '@/ui/components/incremental-input/form';
 import UIFormInput from '@/ui/components/input/form';
+import UIFormSegmentedControl from '@/ui/components/segmented-control/form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FunctionComponent } from 'react';
+import { FunctionComponent, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -14,7 +15,13 @@ const schema = z.object({
     .min(2, 'Preencha o nome do item')
     .max(50, 'O nome do item deve ter no máximo 50 caracteres'),
   item_value: z.string().min(2, 'Preencha um valor'),
-  item_amount: z.coerce.number().min(1, 'Preencha a quantidade'),
+  item_amount: z.coerce
+    .number()
+    .min(1, 'Preencha a quantidade')
+    .max(100, 'A quantidade deve ser no máximo 100'),
+  item_split_type: z.enum(['quantity', 'fraction'], {
+    errorMap: () => ({ message: 'Selecione o tipo de divisão' }),
+  }),
 });
 
 type FormFields = z.infer<typeof schema>;
@@ -32,6 +39,7 @@ const TabItemForm: FunctionComponent<TabItemFormProps> = ({
     item_name: '',
     item_value: '',
     item_amount: 1,
+    item_split_type: 'fraction',
   };
 
   const { control, handleSubmit } = useForm<FormFields>({
@@ -39,12 +47,22 @@ const TabItemForm: FunctionComponent<TabItemFormProps> = ({
     defaultValues,
   });
 
+  const [splitType, setSplitType] = useState<'quantity' | 'fraction'>(
+    defaultValues.item_split_type
+  );
+
+  const handleSplitTypeChange = (value: 'quantity' | 'fraction') => {
+    setSplitType(value);
+  };
+
   const submit = (data: FormFields) => {
     console.log(data);
   };
 
+  console.log(splitType);
+
   return (
-    <UIFlex gap="6" direction="column" py="2">
+    <UIFlex gap="6" direction="column" pt="1" pb="4">
       {/* <UIHeading as="h2" size="5">
         Vamos começar com o básico
       </UIHeading> */}
@@ -72,9 +90,34 @@ const TabItemForm: FunctionComponent<TabItemFormProps> = ({
           max={100}
         />
       </UIFlex>
-      <UIButton type="submit" onClick={handleSubmit(submit)} size="3">
-        Pronto
-      </UIButton>
+      <UIFormSegmentedControl
+        name="item_split_type"
+        label="Como dividir?"
+        control={control}
+        onFieldChange={handleSplitTypeChange}
+        options={[
+          { label: 'Por fração', value: 'fraction' },
+          { label: 'Por quantidade', value: 'quantity' },
+        ]}
+      />
+      <UIFlex gap="4" align="center" justify="center">
+        <UIButton
+          className="grow"
+          variant="soft"
+          size="3"
+          onClick={() => setOpen(false)}
+        >
+          Voltar
+        </UIButton>
+        <UIButton
+          type="submit"
+          onClick={handleSubmit(submit)}
+          size="3"
+          className="!grow"
+        >
+          Pronto
+        </UIButton>
+      </UIFlex>
     </UIFlex>
   );
 };

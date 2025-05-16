@@ -3,7 +3,7 @@ import UIText from '../text';
 
 interface UILabelProps {
   label?: string;
-  fieldName: string;
+  fieldName?: string;
 }
 
 const UILabel: FunctionComponent<UILabelProps> = ({ label, fieldName }) => {

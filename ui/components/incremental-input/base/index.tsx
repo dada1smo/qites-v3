@@ -74,7 +74,7 @@ const UIIncrementalInput: FunctionComponent<UIBaseIncrementalInputProps> = ({
       display={width === 'full' ? 'flex' : 'inline-flex'}
       className="grow"
     >
-      <UILabel label={label} fieldName={name} />
+      <UILabel label={label} />
       <UIFlex gap="2" align="center" justify="between">
         <UIIconButton
           variant="soft"
