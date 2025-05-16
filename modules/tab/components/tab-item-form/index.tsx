@@ -8,6 +8,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { FunctionComponent, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { ItemSplitType } from '../../types/TabType';
+import ItemSplitList from '../item-split-list';
 
 const schema = z.object({
   item_name: z
@@ -47,11 +49,11 @@ const TabItemForm: FunctionComponent<TabItemFormProps> = ({
     defaultValues,
   });
 
-  const [splitType, setSplitType] = useState<'quantity' | 'fraction'>(
+  const [splitType, setSplitType] = useState<ItemSplitType>(
     defaultValues.item_split_type
   );
 
-  const handleSplitTypeChange = (value: 'quantity' | 'fraction') => {
+  const handleSplitTypeChange = (value: ItemSplitType) => {
     setSplitType(value);
   };
 
@@ -90,16 +92,19 @@ const TabItemForm: FunctionComponent<TabItemFormProps> = ({
           max={100}
         />
       </UIFlex>
-      <UIFormSegmentedControl
-        name="item_split_type"
-        label="Como dividir?"
-        control={control}
-        onFieldChange={handleSplitTypeChange}
-        options={[
-          { label: 'Por fração', value: 'fraction' },
-          { label: 'Por quantidade', value: 'quantity' },
-        ]}
-      />
+      <UIFlex gap="2" direction="column">
+        <UIFormSegmentedControl
+          name="item_split_type"
+          label="Como dividir?"
+          control={control}
+          onFieldChange={handleSplitTypeChange}
+          options={[
+            { label: 'Por fração', value: 'fraction' },
+            { label: 'Por quantidade', value: 'quantity' },
+          ]}
+        />
+        <ItemSplitList splitType={splitType} />
+      </UIFlex>
       <UIFlex gap="4" align="center" justify="center">
         <UIButton
           className="grow"

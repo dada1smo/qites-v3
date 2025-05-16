@@ -3,9 +3,11 @@ export interface TabParticipantType {
   name: string;
 }
 
+export type ItemSplitType = 'quantity' | 'fraction';
+
 export interface TabItemSplitType {
   participant_id: string;
-  split_type: 'quantity' | 'fraction';
+  split_type: ItemSplitType;
   split_value: number;
 }
 

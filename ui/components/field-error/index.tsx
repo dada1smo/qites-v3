@@ -14,7 +14,7 @@ const UIFieldError: FunctionComponent<UIFieldErrorProps> = ({ error }) => {
   }
 
   return (
-    <UIText size="2" className="text-(--red-11)" as="span">
+    <UIText size="2" className="text-(--tomato-11)" as="span">
       {error?.message}
     </UIText>
   );

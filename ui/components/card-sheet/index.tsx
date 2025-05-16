@@ -12,7 +12,7 @@ const UICardSheet: FunctionComponent<CardProps & UICardSheetProps> = ({
   return (
     <Card
       {...props}
-      className={`transition duration-3000 !absolute top-0 left-2 w-[calc(100%-16px)] -bottom-4`}
+      className={`transition duration-3000 !fixed top-[12px] left-2 w-[calc(100%-16px)] -bottom-4`}
       style={{
         transition: '0.3s',
         height: 'calc(100% + 8px)',
