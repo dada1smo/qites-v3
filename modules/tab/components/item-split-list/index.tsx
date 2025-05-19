@@ -1,35 +1,32 @@
-import { FunctionComponent, useMemo, useState } from 'react';
-import { ItemSplitType, TabParticipantType } from '../../types/TabType';
+import { FunctionComponent, useMemo } from 'react';
 import UIDynamicList from '@/ui/components/dynamic-list';
-import useGlobalStore from '@/modules/global/store/global.store';
+import { TabSplitHook } from '../../hooks/use-tab-split';
 
 interface ItemSplitListProps {
-  splitType: ItemSplitType;
+  split: TabSplitHook['split'];
+  dispatch: TabSplitHook['dispatch'];
 }
 
 const ItemSplitList: FunctionComponent<ItemSplitListProps> = ({
-  splitType,
+  split,
+  dispatch,
 }) => {
-  const participants = useGlobalStore((state) => state.tab?.participants) || [];
-
-  const [splitParticipants, setSplitParticipants] =
-    useState<TabParticipantType[]>(participants);
-
-  const handleRemoveParticipant = (participantId: string) => {
-    setSplitParticipants((prev) =>
-      prev.filter((participant) => participant.id !== participantId)
-    );
-  };
-
-  const items = useMemo(() => {
-    return splitParticipants.map((participant) => {
-      return {
-        id: participant.id,
-        title: participant.name,
-        onRemove: handleRemoveParticipant,
-      };
-    });
-  }, [splitParticipants]);
+  const items = useMemo(
+    () =>
+      split.participants.map((participant) => {
+        return {
+          id: participant.participant.id,
+          title: participant.participant.name,
+          onRemove: () =>
+            dispatch({
+              type: 'REMOVE_PARTICIPANT',
+              payload: participant.participant.id,
+            }),
+        };
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [split]
+  );
 
   return <UIDynamicList items={items} />;
 };

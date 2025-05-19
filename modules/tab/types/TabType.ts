@@ -6,7 +6,7 @@ export interface TabParticipantType {
 export type ItemSplitType = 'quantity' | 'fraction';
 
 export interface TabItemSplitType {
-  participant_id: string;
+  participant: TabParticipantType;
   split_type: ItemSplitType;
   split_value: number;
 }

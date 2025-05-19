@@ -1,13 +1,16 @@
+'use client';
+
 import UIButton from '@/ui/components/button';
 import UIFlex from '@/ui/components/flex';
-import UIHeading from '@/ui/components/heading';
 import UIFormIncrementalInput from '@/ui/components/incremental-input/form';
 import UIFormInput from '@/ui/components/input/form';
 import UIFormSegmentedControl from '@/ui/components/segmented-control/form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FunctionComponent, useState } from 'react';
+import { FunctionComponent } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import useGlobalStore from '@/modules/global/store/global.store';
+import useTabSplit from '../../hooks/use-tab-split';
 import { ItemSplitType } from '../../types/TabType';
 import ItemSplitList from '../item-split-list';
 
@@ -37,6 +40,8 @@ const TabItemForm: FunctionComponent<TabItemFormProps> = ({
   setOpen,
   itemId,
 }) => {
+  const participants = useGlobalStore((state) => state.tab?.participants) || [];
+
   const defaultValues: FormFields = {
     item_name: '',
     item_value: '',
@@ -44,24 +49,19 @@ const TabItemForm: FunctionComponent<TabItemFormProps> = ({
     item_split_type: 'fraction',
   };
 
+  const splitReducer = useTabSplit({
+    participants,
+    initialSplitType: defaultValues.item_split_type,
+  });
+
   const { control, handleSubmit } = useForm<FormFields>({
     resolver: zodResolver(schema),
     defaultValues,
   });
 
-  const [splitType, setSplitType] = useState<ItemSplitType>(
-    defaultValues.item_split_type
-  );
-
-  const handleSplitTypeChange = (value: ItemSplitType) => {
-    setSplitType(value);
-  };
-
   const submit = (data: FormFields) => {
     console.log(data);
   };
-
-  console.log(splitType);
 
   return (
     <UIFlex gap="6" direction="column" pt="1" pb="4">
@@ -97,13 +97,21 @@ const TabItemForm: FunctionComponent<TabItemFormProps> = ({
           name="item_split_type"
           label="Como dividir?"
           control={control}
-          onFieldChange={handleSplitTypeChange}
+          onFieldChange={(value: ItemSplitType) => {
+            splitReducer.dispatch({
+              type: 'SET_SPLIT_TYPE',
+              payload: value,
+            });
+          }}
           options={[
             { label: 'Por fração', value: 'fraction' },
             { label: 'Por quantidade', value: 'quantity' },
           ]}
         />
-        <ItemSplitList splitType={splitType} />
+        <ItemSplitList
+          split={splitReducer.split}
+          dispatch={splitReducer.dispatch}
+        />
       </UIFlex>
       <UIFlex gap="4" align="center" justify="center">
         <UIButton

@@ -1,4 +1,4 @@
-import { FunctionComponent, MouseEventHandler, ReactNode } from 'react';
+import { FunctionComponent, ReactNode } from 'react';
 import UIFlex from '../../flex';
 import UIIconButton from '../../icon-button';
 import { X } from '@phosphor-icons/react';
