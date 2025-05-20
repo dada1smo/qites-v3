@@ -17,7 +17,9 @@ const UIChip: FunctionComponent<UIChipProps> = ({ label, onDelete }) => {
           <X />
         </UIIconButton>
       )}
-      <UIText as="span">{label}</UIText>
+      <UIText as="span" truncate>
+        {label}
+      </UIText>
     </Card>
   );
 };

@@ -8,7 +8,7 @@ interface UIDynamicListProps {
 
 const UIDynamicList: FunctionComponent<UIDynamicListProps> = ({ items }) => {
   return (
-    <UIFlex direction="column" gap="2">
+    <UIFlex direction="column" gap="2" className="overflow-auto">
       {items.map((item) => (
         <UIFlex key={item.title} gap="2">
           <UIDynamicListItem {...item} />

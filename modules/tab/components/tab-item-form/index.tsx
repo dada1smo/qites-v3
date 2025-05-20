@@ -13,6 +13,9 @@ import useGlobalStore from '@/modules/global/store/global.store';
 import useTabSplit from '../../hooks/use-tab-split';
 import { ItemSplitType } from '../../types/TabType';
 import ItemSplitList from '../item-split-list';
+import UIText from '@/ui/components/text';
+import { getSingularOrPlural } from '@/utils/format/string';
+import { formatCurrency } from '@/utils/format/currency';
 
 const schema = z.object({
   item_name: z
@@ -49,7 +52,7 @@ const TabItemForm: FunctionComponent<TabItemFormProps> = ({
     item_split_type: 'fraction',
   };
 
-  const { control, handleSubmit } = useForm<FormFields>({
+  const { control, handleSubmit, watch } = useForm<FormFields>({
     resolver: zodResolver(schema),
     defaultValues,
   });
@@ -60,12 +63,22 @@ const TabItemForm: FunctionComponent<TabItemFormProps> = ({
     totalAmount: defaultValues.item_amount,
   });
 
+  const watchItemValue = watch('item_value');
+
+  console.log('watchItemValue', typeof watchItemValue);
+
   const submit = (data: FormFields) => {
     console.log(data);
   };
 
   return (
-    <UIFlex gap="6" direction="column" pt="1" pb="4">
+    <UIFlex
+      gap="6"
+      direction="column"
+      pt="1"
+      pb="6"
+      className="w-full overflow-hidden relative max-h-full"
+    >
       {/* <UIHeading as="h2" size="5">
         Vamos começar com o básico
       </UIHeading> */}
@@ -75,46 +88,75 @@ const TabItemForm: FunctionComponent<TabItemFormProps> = ({
         placeholder="Ex.: Litrão de Antárctica"
         control={control}
       />
-      <UIFlex gap="4">
-        <UIFormInput
-          name="item_value"
-          label="Qual o valor do item?"
-          placeholder="0,00"
-          control={control}
-          mask="currency"
-          inputMode="numeric"
-          pattern="[0-9]*"
-        />
-        <UIFormIncrementalInput
-          name="item_amount"
-          label="E a quantidade?"
-          control={control}
-          min={1}
-          max={100}
-          onFieldChange={(e: ChangeEvent<HTMLInputElement>) => {
-            dispatch({
-              type: 'SET_TOTAL_AMOUNT',
-              payload: parseInt(e.target.value, 10),
-            });
-          }}
-        />
+      <UIFlex gap="1" direction="column">
+        <UIFlex gap="4">
+          <UIFormInput
+            name="item_value"
+            label="Qual o valor do item?"
+            placeholder="0,00"
+            control={control}
+            mask="currency"
+            inputMode="numeric"
+            pattern="[0-9]*"
+          />
+          <UIFormIncrementalInput
+            name="item_amount"
+            label="E a quantidade?"
+            control={control}
+            min={1}
+            max={100}
+            onFieldChange={(e: ChangeEvent<HTMLInputElement>) => {
+              dispatch({
+                type: 'SET_TOTAL_AMOUNT',
+                payload: parseInt(e.target.value, 10),
+              });
+            }}
+          />
+        </UIFlex>
+        <UIText as="span" size="2" className="text-(--slate-11)">
+          Valor total:{' '}
+          {watchItemValue
+            ? formatCurrency(parseFloat(watchItemValue) * split.totalAmount)
+            : 'R$ 0,00'}
+        </UIText>
       </UIFlex>
-      <UIFlex gap="2" direction="column">
-        <UIFormSegmentedControl
-          name="item_split_type"
-          label="Como dividir?"
-          control={control}
-          onFieldChange={(value: ItemSplitType) => {
-            dispatch({
-              type: 'SET_SPLIT_TYPE',
-              payload: value,
-            });
-          }}
-          options={[
-            { label: 'Igualmente', value: 'fraction' },
-            { label: 'Por quantidade', value: 'quantity' },
-          ]}
-        />
+      <UIFlex gap="2" direction="column" className="overflow-hidden relative">
+        <UIFlex gap="1" direction="column">
+          <UIFlex gap="2" justify="between" width="100%">
+            <UIText
+              as="span"
+              size="2"
+              weight="medium"
+              className="text-(--jade-12)"
+            >
+              Como dividir?
+            </UIText>
+            <UIText as="span" size="2" className="text-(--slate-11)">
+              (
+              {getSingularOrPlural(
+                split.participants.length,
+                'pessoa',
+                'pessoas',
+                true
+              )}
+              )
+            </UIText>
+          </UIFlex>
+          <UIFormSegmentedControl
+            name="item_split_type"
+            control={control}
+            onFieldChange={(value: ItemSplitType) => {
+              dispatch({
+                type: 'SET_SPLIT_TYPE',
+                payload: value,
+              });
+            }}
+            options={[
+              { label: 'Igualmente', value: 'fraction' },
+              { label: 'Por quantidade', value: 'quantity' },
+            ]}
+          />
+        </UIFlex>
         <ItemSplitList split={split} dispatch={dispatch} />
       </UIFlex>
       <UIFlex gap="4" align="center" justify="center">

@@ -29,10 +29,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" suppressHydrationWarning>
+    <html lang="pt-BR" className="overflow-hidden" suppressHydrationWarning>
       <body
         suppressHydrationWarning
-        className={`${archivo.variable} ${space_mono.variable} dark antialiased`}
+        className={`${archivo.variable} ${space_mono.variable} dark antialiased overflow-hidden`}
       >
         <UITheme accentColor="jade" grayColor="slate" radius="small">
           <UISheetProvider>{children}</UISheetProvider>

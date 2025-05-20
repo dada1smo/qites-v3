@@ -18,7 +18,12 @@ const TabParticipantControl: FunctionComponent<TabParticipantControlProps> = ({
   removeParticipant,
 }) => {
   return (
-    <UIFlex direction="column" gap="1" align="start">
+    <UIFlex
+      direction="column"
+      gap="1"
+      align="start"
+      className="overflow-hidden"
+    >
       <UIFlex gap="2" justify="between" width="100%">
         <UIText as="span" size="2" weight="medium" className="text-(--jade-12)">
           Quem tá junto?
@@ -28,7 +33,11 @@ const TabParticipantControl: FunctionComponent<TabParticipantControlProps> = ({
           )
         </UIText>
       </UIFlex>
-      <UIFlex gap="2" wrap="wrap">
+      <UIFlex
+        gap="2"
+        wrap="wrap"
+        className="max-w-full overflow-y-auto overflow-x-hidden"
+      >
         {participants.map((participant) => {
           return (
             <UIChip

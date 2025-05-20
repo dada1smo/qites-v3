@@ -21,13 +21,13 @@ const UIDynamicListItem: FunctionComponent<UIDynamicListItemProps> = ({
     <UIFlex
       gap="3"
       align="center"
-      className="bg-(--slate-2) w-full"
+      className="bg-(--slate-2) w-full overflow-hidden"
       style={{ borderRadius: 'var(--radius-2)' }}
       minHeight="32px"
       px="2"
       justify="between"
     >
-      <UIFlex gap="3" align="center">
+      <UIFlex gap="3" align="center" className="overflow-hidden">
         <UIIconButton
           color="gray"
           size="2"
@@ -36,9 +36,9 @@ const UIDynamicListItem: FunctionComponent<UIDynamicListItemProps> = ({
         >
           <X fontSize={20} />
         </UIIconButton>
-        <UIText>{title}</UIText>
+        <UIText truncate>{title}</UIText>
       </UIFlex>
-      {endContent && endContent}
+      <div className="shrink-0">{endContent && endContent}</div>
     </UIFlex>
   );
 };

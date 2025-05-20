@@ -18,7 +18,7 @@ const UILayout: FunctionComponent<UILayoutProps> = ({
       direction="column"
       align="stretch"
       justify="start"
-      className="h-[100dvh]"
+      className="h-[100dvh] overflow-hidden"
       position="relative"
     >
       <UIImage

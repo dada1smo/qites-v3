@@ -12,10 +12,11 @@ const UICardSheet: FunctionComponent<CardProps & UICardSheetProps> = ({
   return (
     <Card
       {...props}
-      className={`transition duration-3000 !fixed top-[12px] left-2 w-[calc(100%-16px)] -bottom-4`}
+      className={`overflow-hidden transition duration-3000 !fixed top-[12px] left-2 w-[calc(100%-16px)] -bottom-4`}
       style={{
         transition: '0.3s',
-        height: 'calc(100% + 8px)',
+        height: 'calc(100dvh + 8px)',
+        maxHeight: 'calc(100dvh + 8px)',
         transform: expanded ? 'translateY(0)' : 'translateY(100%)',
       }}
     />

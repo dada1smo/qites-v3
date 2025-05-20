@@ -75,7 +75,13 @@ const TabForm: FunctionComponent = () => {
   };
 
   return (
-    <UIFlex gap="6" direction="column" py="2">
+    <UIFlex
+      gap="6"
+      direction="column"
+      pt="2"
+      pb="4"
+      className="overflow-hidden max-h-full"
+    >
       <UIHeading as="h2" size="5">
         Vamos começar com o básico
       </UIHeading>
