@@ -2,8 +2,7 @@ import {
   ChangeEventHandler,
   FocusEventHandler,
   FunctionComponent,
-  useEffect,
-  useState,
+  useMemo,
 } from 'react';
 import { FieldError } from 'react-hook-form';
 import UIFlex from '../../flex';
@@ -21,6 +20,8 @@ export interface UIIncrementalInputProps {
   fieldRef?: React.Ref<HTMLInputElement>;
   min?: number;
   max?: number;
+  size?: 'sm' | 'md' | 'lg';
+  variant?: 'soft' | 'ghost';
 }
 
 export interface UIBaseIncrementalInputProps extends UIIncrementalInputProps {
@@ -40,65 +41,95 @@ const UIIncrementalInput: FunctionComponent<UIBaseIncrementalInputProps> = ({
   max,
   fieldRef,
   onBlur,
+  size = 'md',
+  variant = 'soft',
 }) => {
-  const [numericValue, setNumericValue] = useState<number>(parseInt(value, 10));
-  const canIncrement = max ? numericValue < max : true;
-  const canDecrement = min ? numericValue > min : true;
+  const numericValue = parseInt(value, 10);
+
+  const canIncrement = useMemo(() => {
+    if (typeof max === 'number') {
+      if (max <= 0) {
+        return false;
+      }
+
+      if (numericValue < max) {
+        return true;
+      }
+
+      if (numericValue >= max) {
+        return false;
+      }
+    }
+    return true;
+  }, [numericValue, max]);
+
+  const canDecrement = useMemo(() => {
+    if (typeof min === 'number') {
+      if (min < 0) {
+        return false;
+      }
+
+      if (numericValue > min) {
+        return true;
+      }
+
+      return false;
+    }
+    return true;
+  }, [numericValue, min]);
 
   const handleIncrement = () => {
     if (!canIncrement) {
       return;
     }
-    setNumericValue((prev) => prev + 1);
+    const event = {
+      target: { value: `${numericValue + 1}` },
+    } as unknown as React.ChangeEvent<HTMLInputElement>;
+    onChange(event);
   };
 
   const handleDecrement = () => {
     if (!canDecrement) {
       return;
     }
-    setNumericValue((prev) => prev - 1);
-  };
-
-  useEffect(() => {
     const event = {
-      target: { value: `${numericValue}` },
+      target: { value: `${numericValue - 1}` },
     } as unknown as React.ChangeEvent<HTMLInputElement>;
     onChange(event);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [numericValue]);
+  };
 
   return (
     <UIFlex
       direction="column"
       gap="1"
       display={width === 'full' ? 'flex' : 'inline-flex'}
-      className="grow"
+      className={width === 'full' ? 'grow' : ''}
     >
       <UILabel label={label} />
       <UIFlex gap="2" align="center" justify="between">
         <UIIconButton
-          variant="soft"
-          size="3"
+          variant={variant}
+          size={size === 'md' ? '3' : '2'}
           onClick={handleDecrement}
           disabled={!canDecrement}
         >
-          <Minus />
+          <Minus fontSize={variant === 'ghost' ? 20 : 16} />
         </UIIconButton>
         <UIText
           className="font-space-mono text-center"
-          size="4"
+          size={size === 'md' ? '4' : '3'}
           style={{ minWidth: '3ch' }}
           id={name}
         >
           {numericValue}
         </UIText>
         <UIIconButton
-          variant="soft"
-          size="3"
+          variant={variant}
+          size={size === 'md' ? '3' : '2'}
           onClick={handleIncrement}
           disabled={!canIncrement}
         >
-          <Plus />
+          <Plus fontSize={variant === 'ghost' ? 20 : 16} />
         </UIIconButton>
       </UIFlex>
       <input

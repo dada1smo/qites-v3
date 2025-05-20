@@ -6,7 +6,7 @@ import UIFormIncrementalInput from '@/ui/components/incremental-input/form';
 import UIFormInput from '@/ui/components/input/form';
 import UIFormSegmentedControl from '@/ui/components/segmented-control/form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FunctionComponent } from 'react';
+import { ChangeEvent, FunctionComponent } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import useGlobalStore from '@/modules/global/store/global.store';
@@ -49,14 +49,15 @@ const TabItemForm: FunctionComponent<TabItemFormProps> = ({
     item_split_type: 'fraction',
   };
 
-  const splitReducer = useTabSplit({
-    participants,
-    initialSplitType: defaultValues.item_split_type,
-  });
-
   const { control, handleSubmit } = useForm<FormFields>({
     resolver: zodResolver(schema),
     defaultValues,
+  });
+
+  const { split, dispatch } = useTabSplit({
+    participants,
+    initialSplitType: defaultValues.item_split_type,
+    totalAmount: defaultValues.item_amount,
   });
 
   const submit = (data: FormFields) => {
@@ -90,6 +91,12 @@ const TabItemForm: FunctionComponent<TabItemFormProps> = ({
           control={control}
           min={1}
           max={100}
+          onFieldChange={(e: ChangeEvent<HTMLInputElement>) => {
+            dispatch({
+              type: 'SET_TOTAL_AMOUNT',
+              payload: parseInt(e.target.value, 10),
+            });
+          }}
         />
       </UIFlex>
       <UIFlex gap="2" direction="column">
@@ -98,20 +105,17 @@ const TabItemForm: FunctionComponent<TabItemFormProps> = ({
           label="Como dividir?"
           control={control}
           onFieldChange={(value: ItemSplitType) => {
-            splitReducer.dispatch({
+            dispatch({
               type: 'SET_SPLIT_TYPE',
               payload: value,
             });
           }}
           options={[
-            { label: 'Por fração', value: 'fraction' },
+            { label: 'Igualmente', value: 'fraction' },
             { label: 'Por quantidade', value: 'quantity' },
           ]}
         />
-        <ItemSplitList
-          split={splitReducer.split}
-          dispatch={splitReducer.dispatch}
-        />
+        <ItemSplitList split={split} dispatch={dispatch} />
       </UIFlex>
       <UIFlex gap="4" align="center" justify="center">
         <UIButton
