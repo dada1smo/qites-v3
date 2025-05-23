@@ -20,6 +20,7 @@ import ItemSplitList from '../item-split-list';
 import UIText from '@/ui/components/text';
 import { getSingularOrPlural } from '@/utils/format/string';
 import { formatCurrency } from '@/utils/format/currency';
+import { formatFloat } from '@/utils/format/number';
 
 const schema = z.object({
   item_name: z
@@ -57,7 +58,7 @@ const TabItemForm: FunctionComponent<TabItemFormProps> = ({
 
   const defaultValues: FormFields = {
     item_name: selectedItem?.name || '',
-    item_value: selectedItem?.value.toString() || '',
+    item_value: formatFloat(selectedItem?.value) || '',
     item_amount: selectedItem?.quantity || 1,
     item_split_type: selectedItem?.split[0]?.split_type || 'fraction',
   };
