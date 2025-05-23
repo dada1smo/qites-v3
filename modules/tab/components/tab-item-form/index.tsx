@@ -20,14 +20,13 @@ import ItemSplitList from '../item-split-list';
 import UIText from '@/ui/components/text';
 import { getSingularOrPlural } from '@/utils/format/string';
 import { formatCurrency } from '@/utils/format/currency';
-import { formatFloat } from '@/utils/format/number';
 
 const schema = z.object({
   item_name: z
     .string()
     .min(2, 'Preencha o nome do item')
     .max(50, 'O nome do item deve ter no máximo 50 caracteres'),
-  item_value: z.string().min(2, 'Preencha um valor'),
+  item_value: z.coerce.number().min(0.01, 'Preencha um valor'),
   item_amount: z.coerce
     .number()
     .min(1, 'Preencha a quantidade')
@@ -58,7 +57,7 @@ const TabItemForm: FunctionComponent<TabItemFormProps> = ({
 
   const defaultValues: FormFields = {
     item_name: selectedItem?.name || '',
-    item_value: formatFloat(selectedItem?.value) || '',
+    item_value: selectedItem?.value || 0,
     item_amount: selectedItem?.quantity || 1,
     item_split_type: selectedItem?.split[0]?.split_type || 'fraction',
   };
@@ -140,7 +139,7 @@ const TabItemForm: FunctionComponent<TabItemFormProps> = ({
         <UIText as="span" size="2" className="text-(--slate-11)">
           Valor total:{' '}
           {watchItemValue
-            ? formatCurrency(parseFloat(watchItemValue) * split.totalAmount)
+            ? formatCurrency(watchItemValue * split.totalAmount)
             : 'R$ 0,00'}
         </UIText>
       </UIFlex>
