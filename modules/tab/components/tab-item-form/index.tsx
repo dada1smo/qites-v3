@@ -11,7 +11,11 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import useGlobalStore from '@/modules/global/store/global.store';
 import useTabSplit from '../../hooks/use-tab-split';
-import { ItemSplitType } from '../../types/TabType';
+import {
+  ItemSplitType,
+  TabItemSplitType,
+  TabItemType,
+} from '../../types/TabType';
 import ItemSplitList from '../item-split-list';
 import UIText from '@/ui/components/text';
 import { getSingularOrPlural } from '@/utils/format/string';
@@ -34,22 +38,28 @@ const schema = z.object({
 
 type FormFields = z.infer<typeof schema>;
 
+export interface ItemFormOutput extends FormFields {
+  split: TabItemSplitType[];
+}
+
 interface TabItemFormProps {
   setOpen: (open: boolean) => void;
-  itemId?: string;
+  selectedItem: TabItemType | null;
 }
 
 const TabItemForm: FunctionComponent<TabItemFormProps> = ({
   setOpen,
-  itemId,
+  selectedItem,
 }) => {
   const participants = useGlobalStore((state) => state.tab?.participants) || [];
+  const createItem = useGlobalStore((state) => state.createItem);
+  const updateItem = useGlobalStore((state) => state.updateItem);
 
   const defaultValues: FormFields = {
-    item_name: '',
-    item_value: '',
-    item_amount: 1,
-    item_split_type: 'fraction',
+    item_name: selectedItem?.name || '',
+    item_value: selectedItem?.value.toString() || '',
+    item_amount: selectedItem?.quantity || 1,
+    item_split_type: selectedItem?.split[0]?.split_type || 'fraction',
   };
 
   const { control, handleSubmit, watch } = useForm<FormFields>({
@@ -61,14 +71,30 @@ const TabItemForm: FunctionComponent<TabItemFormProps> = ({
     participants,
     initialSplitType: defaultValues.item_split_type,
     totalAmount: defaultValues.item_amount,
+    selectedItem,
   });
 
   const watchItemValue = watch('item_value');
 
-  console.log('watchItemValue', typeof watchItemValue);
-
   const submit = (data: FormFields) => {
-    console.log(data);
+    if (selectedItem) {
+      updateItem(selectedItem.id, {
+        ...data,
+        split: split.participants.map((participant) => ({
+          ...participant,
+          split_type: data.item_split_type,
+        })),
+      });
+    } else {
+      createItem({
+        ...data,
+        split: split.participants.map((participant) => ({
+          ...participant,
+          split_type: data.item_split_type,
+        })),
+      });
+    }
+    setOpen(false);
   };
 
   return (
@@ -79,9 +105,6 @@ const TabItemForm: FunctionComponent<TabItemFormProps> = ({
       pb="6"
       className="w-full overflow-hidden relative max-h-full"
     >
-      {/* <UIHeading as="h2" size="5">
-        Vamos começar com o básico
-      </UIHeading> */}
       <UIFormInput
         name="item_name"
         label="O que foi consumido?"

@@ -2,6 +2,7 @@ import { ActionDispatch, useReducer } from 'react';
 import {
   ItemSplitType,
   TabItemSplitType,
+  TabItemType,
   TabParticipantType,
 } from '../types/TabType';
 
@@ -29,14 +30,16 @@ export default function useTabSplit({
   participants,
   initialSplitType,
   totalAmount,
+  selectedItem,
 }: {
   participants: TabParticipantType[];
   initialSplitType: ItemSplitType;
   totalAmount: number;
+  selectedItem: TabItemType | null;
 }): TabSplitHook {
   const [split, dispatch] = useReducer(
     reducer,
-    { participants, splitType: initialSplitType, totalAmount },
+    { participants, splitType: initialSplitType, totalAmount, selectedItem },
     createInitialSplit
   );
 
@@ -50,20 +53,36 @@ function createInitialSplit({
   participants,
   splitType,
   totalAmount,
+  selectedItem,
 }: {
   participants: TabParticipantType[];
   splitType: ItemSplitType;
   totalAmount: number;
+  selectedItem: TabItemType | null;
 }): TabSplitHook['split'] {
+  if (!selectedItem) {
+    return {
+      type: splitType,
+      participants: participants.map((participant) => ({
+        participant,
+        split_type: splitType,
+        split_amount: 0,
+      })),
+      totalAmount,
+      amountLeft: totalAmount,
+    };
+  }
+
   return {
     type: splitType,
-    participants: participants.map((participant) => ({
-      participant,
-      split_type: splitType,
-      split_amount: 0,
-    })),
+    participants: selectedItem.split,
     totalAmount,
-    amountLeft: totalAmount,
+    amountLeft:
+      totalAmount -
+      selectedItem.split.reduce(
+        (acc, participant) => acc + participant.split_amount,
+        0
+      ),
   };
 }
 
